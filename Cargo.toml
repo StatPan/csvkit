@@ -2,3 +2,10 @@
 name = "csvkit"
 version = "1.0.0"
 edition = "2021"
+authors = ["StatPan <statpan@naver.com>"]
+description = "A short and informative description of your Rust package."
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/StatPan/csvkit"
+homepage = "https://statpan.com"
+keywords = ["csv", "reader", "writer", "dictreader", "dictwriter", "data", "parsing"]
+categories = ["data-structures", "data-formats"]
