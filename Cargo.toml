@@ -8,4 +8,4 @@ license = "MIT OR Apache-2.0"
 repository = "https://github.com/StatPan/csvkit"
 homepage = "https://statpan.com"
 keywords = ["csv", "reader", "writer", "dictreader", "dictwriter"]
-categories = ["data-structures", "data-formats"]
+categories = ["csv","EasyCsv","DictWriter","DictReader"]
