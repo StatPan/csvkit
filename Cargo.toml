@@ -1,6 +1,6 @@
 [package]
 name = "csvkit"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2021"
 authors = ["StatPan <statpan@naver.com>"]
 description = "A short and informative description of your Rust package."

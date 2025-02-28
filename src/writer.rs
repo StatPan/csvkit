@@ -33,9 +33,9 @@ impl Default for WriterOptions {
 
 #[derive(Debug)]
 pub struct DictWriter<W: Write> {
-    writer: BufWriter<W>,
-    fieldnames: Vec<String>,
-    options: WriterOptions,
+    pub writer: BufWriter<W>,
+    pub fieldnames: Vec<String>,
+    pub options: WriterOptions,
 }
 
 impl<W: Write> DictWriter<W> {

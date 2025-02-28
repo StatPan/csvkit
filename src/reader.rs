@@ -44,15 +44,15 @@ impl Default for ReaderOptions {
 
 #[derive(Debug)]
 pub struct DictReader<R: Read> {
-    reader: BufReader<R>,
-    header: Vec<String>,
-    delimiter: u8,
-    doublequote: bool,
-    escapechar: Option<u8>,
-    quotechar: u8,
-    quoting: QuoteStyle,
-    skipinitialspace: bool,
-    strict: bool,
+    pub reader: BufReader<R>,
+    pub header: Vec<String>,
+    pub delimiter: u8,
+    pub doublequote: bool,
+    pub escapechar: Option<u8>,
+    pub quotechar: u8,
+    pub quoting: QuoteStyle,
+    pub skipinitialspace: bool,
+    pub strict: bool,
 }
 
 impl<R: Read> Iterator for DictReader<R> {
