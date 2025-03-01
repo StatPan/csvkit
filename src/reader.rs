@@ -132,6 +132,14 @@ impl<R: Read> DictReader<R> {
         Ok(Some(record))
     }
 
+    pub fn read_records(&mut self) -> Result<Vec<HashMap<String, String>>, Box<dyn Error>> {
+        let mut records = Vec::new();
+        while let Some(record) = self.read_record()? {
+            records.push(record);
+        }
+        Ok(records)
+    }
+
     fn parse_line(
         line: &str,
         delimiter: u8,
