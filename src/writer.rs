@@ -1,8 +1,8 @@
 use crate::reader::QuoteStyle;
-use std::collections::HashMap;
 use std::error::Error;
 use std::io::{BufWriter, Write}; // Cursor 추가
 use std::str;
+use std::{collections::HashMap, fmt::Display, hash::Hash};
 
 #[derive(Debug, Clone)]
 pub struct WriterOptions {
@@ -32,17 +32,23 @@ impl Default for WriterOptions {
 }
 
 #[derive(Debug)]
-pub struct DictWriter<W: Write> {
+pub struct DictWriter<W>
+where
+    W: Write,
+{
     pub writer: BufWriter<W>,
     pub fieldnames: Vec<String>,
     pub options: WriterOptions,
 }
 
-impl<W: Write> DictWriter<W> {
+impl<W> DictWriter<W>
+where
+    W: Write,
+{
     pub fn new(writer: W, fieldnames: Vec<String>, options: WriterOptions) -> Self {
-        DictWriter {
+        Self {
             writer: BufWriter::new(writer),
-            fieldnames,
+            fieldnames: fieldnames,
             options,
         }
     }
@@ -62,12 +68,23 @@ impl<W: Write> DictWriter<W> {
         Ok(bytes_written)
     }
 
-    pub fn writerow(&mut self, row: HashMap<String, String>) -> Result<usize, Box<dyn Error>> {
+    pub fn writerow<V>(&mut self, row: HashMap<String, V>) -> Result<usize, Box<dyn Error>>
+    where
+        V: ToString + Clone,
+    {
         let mut csv_row = String::new();
         for (i, fieldname) in self.fieldnames.iter().enumerate() {
-            let empty_value = "".to_string();
-            let value = row.get(fieldname).unwrap_or(&empty_value); // 값이 없으면 빈 문자열 사용
-            let quoted_value = self.quote_value(value)?;
+            let key = fieldname.clone();
+            let value_str = match row.get(&key) {
+                Some(v) =>
+                {
+                    #[allow(clippy::clone_on_copy)]
+                    v.clone().to_string()
+                }
+                None => "".to_string(),
+            };
+
+            let quoted_value = self.quote_value(&value_str)?;
             csv_row.push_str(&quoted_value);
             if i < self.fieldnames.len() - 1 {
                 csv_row.push(self.options.delimiter as char);
@@ -79,7 +96,7 @@ impl<W: Write> DictWriter<W> {
         Ok(bytes_written)
     }
 
-    fn quote_value(&self, value: &str) -> Result<String, Box<dyn Error>> {
+    fn quote_value(&self, value: &String) -> Result<String, Box<dyn Error>> {
         let needs_quotes = match self.options.quoting {
             QuoteStyle::All => true,
             QuoteStyle::Minimal => {
@@ -121,10 +138,10 @@ impl<W: Write> DictWriter<W> {
         }
     }
 
-    pub fn writerows(
-        &mut self,
-        rows: Vec<HashMap<String, String>>,
-    ) -> Result<usize, Box<dyn Error>> {
+    pub fn writerows<V>(&mut self, rows: Vec<HashMap<String, V>>) -> Result<usize, Box<dyn Error>>
+    where
+        V: ToString + Clone,
+    {
         let mut total_bytes_written = 0;
         for row in rows {
             total_bytes_written += self.writerow(row)?;
